@@ -10,8 +10,6 @@ import es.afm.hadoop.examples.writables.PointWritable;
 public class Aggregation2DReducer extends
 		Reducer<PointWritable, LongWritable, PointWritable, LongWritable> {
 
-	private LongWritable outValue = new LongWritable();
-
 	@Override
 	protected void reduce(
 			PointWritable key,
@@ -22,7 +20,6 @@ public class Aggregation2DReducer extends
 		for (LongWritable value : values) {
 			count += value.get();
 		}
-		outValue.set(count);
-		context.write(key, outValue);
+		context.write(key, new LongWritable(count));
 	}
 }

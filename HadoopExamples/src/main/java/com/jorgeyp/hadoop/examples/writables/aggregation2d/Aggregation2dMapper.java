@@ -1,6 +1,7 @@
-package com.jorgeyp.hadoop.examples.writables;
+package com.jorgeyp.hadoop.examples.writables.aggregation2d;
 
-import com.jorgeyp.hadoop.examples.writables.counters.Counters;
+import com.jorgeyp.hadoop.examples.writables.PointWritable;
+import com.jorgeyp.hadoop.examples.counters.Counters;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;

@@ -1,7 +1,7 @@
 package com.jorgeyp.hadoop.examples.writables;
 
-import com.jorgeyp.hadoop.examples.writables.aggregation2d.Aggregation2dMapper;
-import com.jorgeyp.hadoop.examples.writables.aggregation2d.Aggregation2dReducer;
+import com.jorgeyp.hadoop.examples.writables.avgaggregation2d.AvgAggregation2dMapper;
+import com.jorgeyp.hadoop.examples.writables.avgaggregation2d.AvgAggregation2dReducer;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
@@ -14,17 +14,17 @@ import java.util.Arrays;
 /**
  * Created by jorge.yague on 25/01/16.
  */
-public class Aggregation2dTest {
+public class AvgAggregation2dTest {
 
     // ##########   Map     ####################################################/
     @Test
     public void processesValidLine() throws IOException, InterruptedException {
         Text line = new Text("1,2:3");
 
-        new MapDriver<LongWritable, Text, PointWritable, LongWritable>()
-                .withMapper(new Aggregation2dMapper())
+        new MapDriver<LongWritable, Text, PointWritable, AvgWritable>()
+                .withMapper(new AvgAggregation2dMapper())
                 .withInput(new LongWritable(0), line)
-                .withOutput(new PointWritable(1, 2), new LongWritable(3))
+                .withOutput(new PointWritable(1, 2), new AvgWritable(1, 3))
                 .runTest();
     }
 
@@ -32,10 +32,10 @@ public class Aggregation2dTest {
     @Test
     public void returnsPoints() throws IOException, InterruptedException {
 
-        new ReduceDriver<PointWritable, LongWritable, PointWritable, LongWritable>()
-                .withReducer(new Aggregation2dReducer())
-                .withInput(new PointWritable(1, 2), Arrays.asList(new LongWritable(3), new LongWritable(7)))
-                .withOutput(new PointWritable(1, 2), new LongWritable(10))
+        new ReduceDriver<PointWritable, AvgWritable, PointWritable, AvgWritable>()
+                .withReducer(new AvgAggregation2dReducer())
+                .withInput(new PointWritable(1, 2), Arrays.asList(new AvgWritable(1, 3), new AvgWritable(1, 7)))
+                .withOutput(new PointWritable(1, 2), new AvgWritable(2, 10))
                 .runTest();
     }
 

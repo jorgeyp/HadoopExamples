@@ -1,5 +1,6 @@
 package com.jorgeyp.hadoop.examples.wordcount;
 
+import com.jorgeyp.hadoop.examples.writables.AvgWritable;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -34,7 +35,7 @@ public class WordCountDriver extends Configured implements Tool {
         wordCountJob.setReducerClass(WordCountReducer.class);
 
         wordCountJob.setOutputKeyClass(Text.class);
-        wordCountJob.setOutputValueClass(IntWritable.class);
+        wordCountJob.setOutputValueClass(AvgWritable.class);
 
         wordCountJob.waitForCompletion(true);
 

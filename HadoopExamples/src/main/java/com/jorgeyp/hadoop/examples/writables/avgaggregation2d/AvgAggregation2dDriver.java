@@ -1,7 +1,8 @@
-package com.jorgeyp.hadoop.examples.writables;
+package com.jorgeyp.hadoop.examples.writables.avgaggregation2d;
 
+import com.jorgeyp.hadoop.examples.writables.AvgWritable;
+import com.jorgeyp.hadoop.examples.writables.PointWritable;
 import es.afm.hadoop.examples.writables.counters.Counters;
-import org.apache.hadoop.conf.Configurable;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -16,7 +17,7 @@ import org.apache.hadoop.util.ToolRunner;
 /**
  * Created by jorge.yague on 25/01/16.
  */
-public class Aggregation2dDriver extends Configured implements Tool {
+public class AvgAggregation2dDriver extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         if (args.length != 2) {
@@ -25,19 +26,20 @@ public class Aggregation2dDriver extends Configured implements Tool {
             return -1;
         }
 
-        Job job = new Job(getConf(), "Aggregation 2D");
+        Job job = new Job(getConf(), "Avg Aggregation 2D");
         job.setJarByClass(getClass());
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
-        job.setMapperClass(Aggregation2dMapper.class);
-        job.setReducerClass(Aggregation2dReducer.class);
+        job.setMapperClass(AvgAggregation2dMapper.class);
+        job.setCombinerClass(AvgAggregation2dReducer.class);
+        job.setReducerClass(AvgAggregation2dReducer.class);
 
         job.setMapOutputKeyClass(PointWritable.class);
-        job.setMapOutputValueClass(LongWritable.class);
+        job.setMapOutputValueClass(AvgWritable.class);
 
         job.setOutputKeyClass(PointWritable.class);
-        job.setOutputValueClass(LongWritable.class);
+        job.setOutputValueClass(AvgWritable.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
@@ -56,7 +58,7 @@ public class Aggregation2dDriver extends Configured implements Tool {
     }
 
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new Aggregation2dDriver(), args);
+        int exitCode = ToolRunner.run(new AvgAggregation2dDriver(), args);
         System.exit(exitCode);
     }
 }
