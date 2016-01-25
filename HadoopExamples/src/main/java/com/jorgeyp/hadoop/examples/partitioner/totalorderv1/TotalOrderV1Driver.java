@@ -1,21 +1,24 @@
-package com.jorgeyp.hadoop.examples.partitioner.urlcount;
+package com.jorgeyp.hadoop.examples.partitioner.totalorderv1;
 
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import java.io.IOException;
+
 /**
  * Created by jorge.yague on 25/01/16.
  */
-public class UrlCountDriver extends Configured implements Tool {
+public class TotalOrderV1Driver extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
@@ -25,37 +28,35 @@ public class UrlCountDriver extends Configured implements Tool {
             return -1;
         }
 
-        Job job = new Job(getConf(), "URL count");
-        //local mode execution will turn this to 1
-        job.setNumReduceTasks(2); // 2 Reduce tasks, so it uses the partitioner
+        deleteOutputFileIfExists(args);
 
-        job.setJarByClass(getClass());
-        job.setInputFormatClass(TextInputFormat.class);
+        final Job job = Job.getInstance(getConf());
+        // local mode execution will turn this to 1
+        job.setNumReduceTasks(2);
+
+        job.setJarByClass(TotalOrderV1Driver.class);
+        job.setInputFormatClass(SequenceFileInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
 
-        job.setMapperClass(UrlCountMapper.class);
-        job.setReducerClass(UrlCountReducer.class);
         // We may use a combiner
-        job.setCombinerClass(UrlCountReducer.class);
-        job.setPartitionerClass(UrlCountPartitioner.class); // Custom partitioner
+        job.setPartitionerClass(TotalOrderV1Partitioner.class);
 
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(LongWritable.class);
-//
-        job.setOutputKeyClass(Text.class);//
-        job.setOutputValueClass(LongWritable.class);
+        job.setOutputKeyClass(LongWritable.class);
+        job.setOutputValueClass(Text.class);
 
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        job.waitForCompletion(true);
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new UrlCountDriver(), args);
+        int exitCode = ToolRunner.run(new TotalOrderV1Driver(), args);
         System.exit(exitCode);
     }
 
+    private void deleteOutputFileIfExists(String[] args) throws IOException {
+        final Path output = new Path(args[1]);
+        FileSystem.get(output.toUri(), getConf()).delete(output, true);
+    }
 }

@@ -35,7 +35,7 @@ public class WordCountDriver extends Configured implements Tool {
         wordCountJob.setReducerClass(WordCountReducer.class);
 
         wordCountJob.setOutputKeyClass(Text.class);
-        wordCountJob.setOutputValueClass(AvgWritable.class);
+        wordCountJob.setOutputValueClass(IntWritable.class);
 
         wordCountJob.waitForCompletion(true);
 
