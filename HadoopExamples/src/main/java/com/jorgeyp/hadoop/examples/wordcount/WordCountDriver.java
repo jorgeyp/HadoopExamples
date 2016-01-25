@@ -1,4 +1,4 @@
-package com.jorgeyp.hadoop.examples;
+package com.jorgeyp.hadoop.examples.wordcount;
 
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;

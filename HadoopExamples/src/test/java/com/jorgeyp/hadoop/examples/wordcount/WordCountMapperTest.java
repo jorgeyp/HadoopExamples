@@ -1,5 +1,6 @@
-package com.jorgeyp.hadoop.examples;
+package com.jorgeyp.hadoop.examples.wordcount;
 
+import com.jorgeyp.hadoop.examples.wordcount.WordCountMapper;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;

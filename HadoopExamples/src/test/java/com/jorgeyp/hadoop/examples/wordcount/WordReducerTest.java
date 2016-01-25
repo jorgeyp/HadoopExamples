@@ -1,5 +1,6 @@
-package com.jorgeyp.hadoop.examples;
+package com.jorgeyp.hadoop.examples.wordcount;
 
+import com.jorgeyp.hadoop.examples.wordcount.WordCountReducer;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mrunit.mapreduce.ReduceDriver;
